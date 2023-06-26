@@ -1,7 +1,7 @@
 const { User, Thought } = require('../models');
 
 module.exports = {
-  // Get all users
+  // Get all thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find();
@@ -10,7 +10,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Get a single user
+  // Get a single thought
   async getSingleThought(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId });
@@ -24,12 +24,12 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // create a new user
+  // create a new thought
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
       const user = await User.findOneAndUpdate(
-        { _id: req.body.username },
+        { username: req.body.username },
         { $addToSet: { thoughts: thought._id } },
         { new: true }
       );
@@ -59,7 +59,7 @@ module.exports = {
         res.status(500).json(err);
     }
   },
-  // Delete a user and associated apps
+  // Delete a thought
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
@@ -77,7 +77,7 @@ module.exports = {
     try {
         const thought = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $addToSet: {friends: req.body} },
+            { $addToSet: {reactions: req.body} },
             { new: true }
           );
           if (!thought) {
